@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         mFusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this)
 
+        //Cheking if location is enabled
 
         if (!isLocationEnabled()) {
             Toast.makeText(
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    // Getting weather as wellas displaying it Main one
     private fun getLocationWeatherDetails(latitude: Double, longitude: Double) {
         if (Constants.isNetworkAvailable(context = this)) {
             val retrofit = Retrofit.Builder()
@@ -136,6 +138,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Convert date and Time in standard form
 
     private fun convertTime(time: Long): String {
         val date = Date(time * 1000L)
@@ -153,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         return formatter.format(date)
     }
 
+    // Location enabled or not func
 
     private fun isLocationEnabled(): Boolean {
         val locationManager =
@@ -161,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
-
+ // Check the permission be granted or not just confirms it
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -191,6 +195,7 @@ class MainActivity : AppCompatActivity() {
             ).show()
         }}
 
+    // Checks for internet connection
 
     private fun getLocationWeatherDetails() {
 
@@ -212,6 +217,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    // Finally gets the location
     @SuppressLint("MissingPermission")
     private fun requestLocationData() {
 
@@ -247,6 +254,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    // Checks hv permission or not if not open dualog
 
     private fun requestPermissions() {
         if (
@@ -272,7 +280,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
+// Alert Dialog that tell why permission needed
     private fun showRequestDialog() {
         AlertDialog.Builder(this)
             .setPositiveButton("GO TO SETTINGS") { _, _ ->

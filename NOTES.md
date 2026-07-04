@@ -569,7 +569,7 @@ This line retrieves the **ConnectivityManager**, which is responsible for checki
 
 - **Why API Level Check?**
 ```kotlin
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){}
 ```
 
  APIs starting from **Android 6 (API 23)**.
@@ -661,3 +661,100 @@ Instead, they use `activeNetworkInfo` to determine whether the device is connect
 
 #### getLocationWeatherDetails()
 If you get network from Constant.isNetworkAvailable(this) then toast Got network else not and call it with lat and long 
+
+
+---
+## Date & Time Conversion in Weather App
+
+The OpenWeather API returns date and time as a **Unix Timestamp**.
+**Example : 1783152106**
+A Unix Timestamp represents the number of **seconds** elapsed since
+**1 January 1970 00:00:00 UTC**
+ so we convert them into readable date and time.
+
+
+### convertTime()
+Converts a Unix Timestamp into a readable **time**.
+1783152106 ---> 14:38
+```kotlin
+val date = Date(time * 1000L)
+```
+The OpenWeather API returns time in
+Seconds And
+The Java `Date` class expects
+in
+Milliseconds so convert to millisec
+
+creates a Date object.
+
+
+```kotlin
+SimpleDateFormat("HH:mm", Locale.UK)
+```
+Determines how the output should appear.
+Pattern
+HH:mm
+means
+22:10
+#### Common Pattern Symbols
+
+| Pattern | Meaning | Example |
+|----------|---------|----------|
+| HH | Hour (24-hour format) | 18 |
+| hh | Hour (12-hour format) | 06 |
+| mm | Minutes | 30 |
+| ss | Seconds | 45 |
+| a | AM / PM | PM |
+
+HH:mm -> 18:30
+
+hh:mm a -> 06:30 PM
+
+
+
+```kotlin
+timeFormatted.timeZone =
+    TimeZone.getDefault()
+```
+Uses the phone's current timezone.
+If the device is in India
+Asia/Kolkata (IST)
+the displayed time will also be in IST.
+
+
+```kotlin
+return timeFormatted.format(date)
+```
+Formats the Date object according to
+HH:mm
+
+03 Jul 2026 14:38:20
+-> 14:38
+
+
+### convertDate()
+
+1783152106 ->
+04/07/2026
+
+### Difference Between convertTime() and convertDate()
+
+| convertTime() | convertDate() |
+|---------------|---------------|
+| Converts timestamp into time | Converts timestamp into date |
+| Pattern = `HH:mm` | Pattern = `dd/MM/yyyy` |
+| Output = `14:38` | Output = `04/07/2026` |
+
+---
+
+#### Why is Locale.UK used?
+- Defines locale-specific formatting rules.
+- It helps Java format dates consistently.
+- It **does not change the timezone**.
+- Timezone is controlled separately using
+- TimeZone.getDefault()
+
+#### Why is TimeZone.getDefault() used?
+- Ensures the displayed date and time match the user's device timezone.
+- Without it, the formatter may use a different timezone, causing incorrect times.
+
