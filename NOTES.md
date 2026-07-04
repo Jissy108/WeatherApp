@@ -758,3 +758,12 @@ HH:mm
 - Ensures the displayed date and time match the user's device timezone.
 - Without it, the formatter may use a different timezone, causing incorrect times.
 
+
+
+
+Toast.makeText(
+//                            this@MainActivity,
+//                            "Lat: ${weather?.coord?.lat}\nLon: ${weather?.coord?.lon}",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                        Toast.makeText( this@MainActivity, weather.toString(), Toast.LENGTH_SHORT).show()

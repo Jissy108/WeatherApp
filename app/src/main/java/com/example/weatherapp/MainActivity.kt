@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
             LocationServices.getFusedLocationProviderClient(this)
 
         //Cheking if location is enabled
-
         if (!isLocationEnabled()) {
             Toast.makeText(
                 this@MainActivity,
@@ -61,82 +60,52 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
-
     }
 
 
-    // Getting weather as wellas displaying it Main one
+    // Getting weather by calling retrofit response from WeatherRepo
     private fun getLocationWeatherDetails(latitude: Double, longitude: Double) {
         if (Constants.isNetworkAvailable(context = this)) {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            val serviceApi = retrofit.create(WeatherServiceApi::class.java)
-            val call = serviceApi.getWeatherDetails(
-                latitude,
-                longitude,
-                Constants.APP_ID,
-                Constants.METRIC_UNIT
-            )
-            call.enqueue(object : Callback<WeatherResponse> {
-                override fun onResponse(
-                    call: Call<WeatherResponse>,
-                    response: Response<WeatherResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val weather = response.body()
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Lat: ${weather?.coord?.lat}\nLon: ${weather?.coord?.lon}",
-//                            Toast.LENGTH_LONG
-//                        ).show()
-//                        Toast.makeText( this@MainActivity, weather.toString(), Toast.LENGTH_SHORT).show()
-
-
-                        for (i in weather?.weather?.indices!!) {
-                            findViewById<TextView>(R.id.timesunset).text = convertTime(weather.sys.sunset.toLong())
-                            findViewById<TextView>(R.id.timesunise).text = convertTime(weather.sys.sunrise.toLong())
-                            findViewById<TextView>(R.id.tvStatus).text = weather.weather[i].description
-                            findViewById<TextView>(R.id.tvDate).text = convertDate(weather.dt.toLong())
-                            val weatherIcon = findViewById<ImageView>(R.id.ivWeather)
-                            when (weather.weather[0].main) {
-                                "Clear" -> weatherIcon.setImageResource(R.drawable.clear)
-                                "Clouds" -> weatherIcon.setImageResource(R.drawable.cloudy)
-                                "Rain","Drizzle"-> weatherIcon.setImageResource(R.drawable.rain)
-                                "Thunderstorm" -> weatherIcon.setImageResource(R.drawable.thunder)
-                                "Snow" -> weatherIcon.setImageResource(R.drawable.snow)
-                                "Mist", "Fog", "Haze", "Smoke" ->
-                                    weatherIcon.setImageResource(R.drawable.fog)
-                                else -> weatherIcon.setImageResource(R.drawable.info)
-                            }
-                            findViewById<TextView>(R.id.tvCity).text = weather.name
-                            findViewById<TextView>(R.id.tvTemp).text = weather.main.temp.toString()
-                            findViewById<TextView>(R.id.timehumidity).text = weather.main.humidity.toString() + "%"
-                            findViewById<TextView>(R.id.timepressure).text = weather.main.pressure.toString()
-                            findViewById<TextView>(R.id.timewind).text = "${(weather.wind.speed * 3.6).toInt()} km/h"
-                        }
-
-
-                    } else {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Something went wrong",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+            val repo = WeatherRepo()
+            repo.getWeather(latitude, longitude) { weather ->
+                if (weather != null) {
+                    displayData(weather)
+                } else {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }
-                override fun onFailure(
-                    call: Call<WeatherResponse>,
-                    t: Throwable?
-                ) {
-
-                }
-            })
+            }
         }
     }
+
+    //To display the data
+    private fun displayData(weather: WeatherResponse?) {
+
+        for (i in weather?.weather?.indices!!) {
+            findViewById<TextView>(R.id.timesunset).text = convertTime(weather.sys.sunset.toLong())
+            findViewById<TextView>(R.id.timesunise).text = convertTime(weather.sys.sunrise.toLong())
+            findViewById<TextView>(R.id.tvStatus).text = weather.weather[i].description
+            findViewById<TextView>(R.id.tvDate).text = convertDate(weather.dt.toLong())
+            val weatherIcon = findViewById<ImageView>(R.id.ivWeather)
+            when (weather.weather[0].main) {
+                "Clear" -> weatherIcon.setImageResource(R.drawable.clear)
+                "Clouds" -> weatherIcon.setImageResource(R.drawable.cloudy)
+                "Rain", "Drizzle" -> weatherIcon.setImageResource(R.drawable.rain)
+                "Thunderstorm" -> weatherIcon.setImageResource(R.drawable.thunder)
+                "Snow" -> weatherIcon.setImageResource(R.drawable.snow)
+                "Mist", "Fog", "Haze", "Smoke" ->
+                    weatherIcon.setImageResource(R.drawable.fog)
+
+                else -> weatherIcon.setImageResource(R.drawable.info)
+            }
+            findViewById<TextView>(R.id.tvCity).text = weather.name
+            findViewById<TextView>(R.id.tvTemp).text = weather.main.temp.toString()
+            findViewById<TextView>(R.id.timehumidity).text = weather.main.humidity.toString() + "%"
+            findViewById<TextView>(R.id.timepressure).text = weather.main.pressure.toString()
+            findViewById<TextView>(R.id.timewind).text =
+                "${(weather.wind.speed * 3.6).toInt()} km/h"
+        }
+    }
+
 
     // Convert date and Time in standard form
 
@@ -165,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
- // Check the permission be granted or not just confirms it
+    // Check the permission be granted or not just confirms it
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -193,29 +162,10 @@ class MainActivity : AppCompatActivity() {
                 "The permission was not granted",
                 Toast.LENGTH_SHORT
             ).show()
-        }}
-
-    // Checks for internet connection
-
-    private fun getLocationWeatherDetails() {
-
-        if (Constants.isNetworkAvailable(this)) {
-
-            Toast.makeText(
-                this,
-                "There is internet connection",
-                Toast.LENGTH_SHORT
-            ).show()
-
-        } else {
-
-            Toast.makeText(
-                this,
-                "There's no internet connection",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
+
+
 
 
     // Finally gets the location
@@ -260,14 +210,15 @@ class MainActivity : AppCompatActivity() {
         if (
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-            ||  ActivityCompat.shouldShowRequestPermissionRationale(
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            || ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         ) {
             showRequestDialog()
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(
@@ -280,7 +231,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-// Alert Dialog that tell why permission needed
+    // Alert Dialog that tell why permission needed
     private fun showRequestDialog() {
         AlertDialog.Builder(this)
             .setPositiveButton("GO TO SETTINGS") { _, _ ->
