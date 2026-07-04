@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:textSize="13sp"
-            tools:text="20 April 2012, 20:08 PM" />
+            android:text="20 April 2012, 20:08 PM" />
 
         <Space
             android:layout_width="match_parent"
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="Sunrise"/>
+                        android:text="Sunrise"/>
 
                     <TextView
                         android:id="@+id/timesunise"
@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="Sunset"/>
+                        android:text="Sunset"/>
 
                     <TextView
                         android:id="@+id/timesunset"
@@ -188,7 +188,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="20sp"
-                        tools:text="Wind"/>
+                        android:text="Wind"/>
 
                     <TextView
                         android:id="@+id/timewind"
@@ -235,7 +235,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="14sp"
-                        tools:text="Humidity"/>
+                        android:text="Humidity"/>
 
                     <TextView
                         android:id="@+id/timehumidity"
@@ -274,7 +274,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="14sp"
-                        tools:text="Pressure"/>
+                        android:text="Pressure"/>
 
                     <TextView
                         android:id="@+id/timepressure"
@@ -285,7 +285,7 @@
                         tools:text="06:40 AM"/>
                 </LinearLayout>
 
-                <!-- Info -->
+                <!-- Add-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -298,9 +298,9 @@
 
                     <ImageView
                         android:id="@+id/imginfo"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/info"
+                        android:layout_width="47dp"
+                        android:layout_height="47dp"
+                        android:src="@drawable/add"
                         app:tint="@color/white" />
 
                     <Space
@@ -308,12 +308,12 @@
                         android:layout_height="5dp"/>
 
                     <TextView
-                        android:id="@+id/titleinfo"
+                        android:id="@+id/titleadd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
-                        tools:text="Info"/>
+                        android:textSize="14sp"
+                        android:text="Add Place"/>
 
                     <TextView
                         android:id="@+id/timeinfo"

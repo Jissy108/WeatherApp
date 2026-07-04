@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                             findViewById<TextView>(R.id.timesunset).text = convertTime(weather.sys.sunset.toLong())
                             findViewById<TextView>(R.id.timesunise).text = convertTime(weather.sys.sunrise.toLong())
                             findViewById<TextView>(R.id.tvStatus).text = weather.weather[i].description
-
+                            findViewById<TextView>(R.id.tvDate).text = convertDate(weather.dt.toLong())
                             val weatherIcon = findViewById<ImageView>(R.id.ivWeather)
                             when (weather.weather[0].main) {
                                 "Clear" -> weatherIcon.setImageResource(R.drawable.clear)
@@ -111,8 +111,6 @@ class MainActivity : AppCompatActivity() {
                                 else -> weatherIcon.setImageResource(R.drawable.info)
                             }
                             findViewById<TextView>(R.id.tvCity).text = weather.name
-//                            findViewById<TextView>(R.id.tvMax).text = weather.main.temp_max.toString()
-//                            findViewById<TextView>(R.id.tvMin).text = weather.main.temp_min.toString()
                             findViewById<TextView>(R.id.tvTemp).text = weather.main.temp.toString()
                             findViewById<TextView>(R.id.timehumidity).text = weather.main.humidity.toString() + "%"
                             findViewById<TextView>(R.id.timepressure).text = weather.main.pressure.toString()
@@ -146,6 +144,14 @@ class MainActivity : AppCompatActivity() {
         return timeFormatted.format(date)
     }
 
+    private fun convertDate(time: Long): String {
+        val date = Date(time * 1000L)
+
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
+        formatter.timeZone = TimeZone.getDefault()
+
+        return formatter.format(date)
+    }
 
 
     private fun isLocationEnabled(): Boolean {
