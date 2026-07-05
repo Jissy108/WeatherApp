@@ -1,7 +1,6 @@
 package com.example.weatherapp
 
 
-import android.content.Context
 import com.example.weatherapp.models.CoordinatesResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -20,8 +19,7 @@ interface WeatherServiceApi {
 
     @GET("geo/1.0/direct")
     fun getCoordinates(
-        @Query("q") cityName: String,
-        @Query("q") countryCode: String,
+        @Query("q") location: String?,
         @Query("limit") limit: Int,
         @Query("appid") appId: String
     ): Call<List<CoordinatesResponse>>

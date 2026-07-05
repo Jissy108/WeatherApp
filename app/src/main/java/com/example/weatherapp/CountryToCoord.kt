@@ -9,15 +9,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class CountryToCoord {
-    fun getCoordinates(cityName: String,countryCode: String,onResult: (List<CoordinatesResponse>?) -> Unit){
+    fun getCoordinates(
+        location: String?,
+        onResult: (List<CoordinatesResponse>?) -> Unit
+    ){
         val retrofit = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val serviceApi = retrofit.create(WeatherServiceApi::class.java)
         val call = serviceApi.getCoordinates(
-            cityName,
-            countryCode,
+            location,
             Constants.limit,
             Constants.APP_ID
         )

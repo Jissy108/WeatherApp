@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp">
         <activity
+            android:name=".NewLocationScreen"
+            android:exported="false" />
+        <activity
             android:name=".NextLocation"
             android:exported="false" />
         <activity
