@@ -44,6 +44,12 @@ class MainActivity : AppCompatActivity() {
         mFusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this)
 
+        val icon = findViewById<ImageView>(R.id.imginfo)
+        icon.setOnClickListener {
+            val intent = Intent(this, NextLocation::class.java)
+            startActivity(intent)
+        }
+
         //Cheking if location is enabled
         if (!isLocationEnabled()) {
             Toast.makeText(

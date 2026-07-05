@@ -1,5 +1,6 @@
 package com.example.weatherapp
 
+import com.example.weatherapp.models.CoordinatesResponse
 import com.example.weatherapp.utils.Constants
 import retrofit2.Call
 import retrofit2.Callback
@@ -8,34 +9,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class CountryToCoord {
-    fun getCoordinates(cityName: String,limit: Int,appId: String,onResult: (WeatherResponse?) -> Unit){
+    fun getCoordinates(cityName: String,countryCode: String,onResult: (List<CoordinatesResponse>?) -> Unit){
         val retrofit = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val serviceApi = retrofit.create(WeatherServiceApi::class.java)
-        val call = serviceApi.getCountry(
+        val call = serviceApi.getCoordinates(
             cityName,
-            limit,
-            appId
+            countryCode,
+            Constants.limit,
+            Constants.APP_ID
         )
-        call.enqueue(object : Callback<WeatherResponse> {
+        call.enqueue(object : Callback<List<CoordinatesResponse>> {
             override fun onResponse(
-                call: Call<WeatherResponse>,
-                response: Response<WeatherResponse>
+                call: Call<List<CoordinatesResponse>>,
+                response: Response<List<CoordinatesResponse>>
             ) {
                 if (response.isSuccessful) {
-                    val weather = response.body()
-                    onResult(weather)
+                    val coordinate = response.body()
+                    onResult(coordinate)
                 } else {
                     onResult(null)
                 }
             }
             override fun onFailure(
-                call: Call<WeatherResponse>,
+                call: Call<List<CoordinatesResponse>>,
                 t: Throwable?
             ) {
-
+                onResult(null)
             }
         })
     }
