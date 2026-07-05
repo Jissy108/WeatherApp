@@ -16,6 +16,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.databinding.DataBindingUtil
+import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.utils.Constants
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -35,17 +37,22 @@ import java.util.TimeZone
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_LOCATION_CODE = 123
+    private lateinit var mBinding: ActivityMainBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+//        setContentView(R.layout.activity_main)
+        mBinding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_main
+        )
 
         mFusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this)
 
-        val icon = findViewById<ImageView>(R.id.imginfo)
-        icon.setOnClickListener {
+//        val icon = findViewById<ImageView>(R.id.imginfo)
+        mBinding.imginfo.setOnClickListener {
             val intent = Intent(this, NextLocation::class.java)
             startActivity(intent)
         }
@@ -75,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             val repo = WeatherRepo()
             repo.getWeather(latitude, longitude) { weather ->
                 if (weather != null) {
-                    displayData(weather)
+                    WeatherDisplay.displayData(mBinding,weather,weather.name)
                 } else {
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }
@@ -84,52 +91,60 @@ class MainActivity : AppCompatActivity() {
     }
 
     //To display the data
-    private fun displayData(weather: WeatherResponse?) {
-
-        for (i in weather?.weather?.indices!!) {
-            findViewById<TextView>(R.id.timesunset).text = convertTime(weather.sys.sunset.toLong())
-            findViewById<TextView>(R.id.timesunise).text = convertTime(weather.sys.sunrise.toLong())
-            findViewById<TextView>(R.id.tvStatus).text = weather.weather[i].description
-            findViewById<TextView>(R.id.tvDate).text = convertDate(weather.dt.toLong())
-            val weatherIcon = findViewById<ImageView>(R.id.ivWeather)
-            when (weather.weather[0].main) {
-                "Clear" -> weatherIcon.setImageResource(R.drawable.clear)
-                "Clouds" -> weatherIcon.setImageResource(R.drawable.cloudy)
-                "Rain", "Drizzle" -> weatherIcon.setImageResource(R.drawable.rain)
-                "Thunderstorm" -> weatherIcon.setImageResource(R.drawable.thunder)
-                "Snow" -> weatherIcon.setImageResource(R.drawable.snow)
-                "Mist", "Fog", "Haze", "Smoke" ->
-                    weatherIcon.setImageResource(R.drawable.fog)
-
-                else -> weatherIcon.setImageResource(R.drawable.info)
-            }
-            findViewById<TextView>(R.id.tvCity).text = weather.name
-            findViewById<TextView>(R.id.tvTemp).text = weather.main.temp.toString()
-            findViewById<TextView>(R.id.timehumidity).text = weather.main.humidity.toString() + "%"
-            findViewById<TextView>(R.id.timepressure).text = weather.main.pressure.toString()
-            findViewById<TextView>(R.id.timewind).text =
-                "${(weather.wind.speed * 3.6).toInt()} km/h"
-        }
-    }
-
-
-    // Convert date and Time in standard form
-
-    private fun convertTime(time: Long): String {
-        val date = Date(time * 1000L)
-        val timeFormatted = SimpleDateFormat("HH:mm", Locale.UK)
-        timeFormatted.timeZone = TimeZone.getDefault()
-        return timeFormatted.format(date)
-    }
-
-    private fun convertDate(time: Long): String {
-        val date = Date(time * 1000L)
-
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
-        formatter.timeZone = TimeZone.getDefault()
-
-        return formatter.format(date)
-    }
+//    private fun displayData(weather: WeatherResponse?,cityName:String) {
+//        for (i in weather?.weather?.indices!!) {
+////            findViewById<TextView>(R.id.timesunset).text = convertTime(weather.sys.sunset.toLong())
+//            mBinding.timesunset.text = convertTime(weather.sys.sunset.toLong())
+////            findViewById<TextView>(R.id.timesunise).text = convertTime(weather.sys.sunrise.toLong())
+//            mBinding.timesunise.text = convertTime(weather.sys.sunrise.toLong())
+////            findViewById<TextView>(R.id.tvStatus).text = weather.weather[i].description
+//            mBinding.tvStatus.text = weather.weather[i].description
+////            findViewById<TextView>(R.id.tvDate).text = convertDate(weather.dt.toLong())
+//            mBinding.tvDate.text = convertDate(weather.dt.toLong())
+////            val weatherIcon = findViewById<ImageView>(R.id.ivWeather)
+//
+//            when (weather.weather[0].main) {
+//                "Clear" -> mBinding.ivWeather.setImageResource(R.drawable.clear)
+//                "Clouds" -> mBinding.ivWeather.setImageResource(R.drawable.cloudy)
+//                "Rain", "Drizzle" -> mBinding.ivWeather.setImageResource(R.drawable.rain)
+//                "Thunderstorm" -> mBinding.ivWeather.setImageResource(R.drawable.thunder)
+//                "Snow" -> mBinding.ivWeather.setImageResource(R.drawable.snow)
+//                "Mist", "Fog", "Haze", "Smoke" ->
+//                    mBinding.ivWeather.setImageResource(R.drawable.fog)
+//                else -> mBinding.ivWeather.setImageResource(R.drawable.info)
+//            }
+////            findViewById<TextView>(R.id.tvCity).text = weather.name
+//            mBinding.tvCity.text = cityName
+////            findViewById<TextView>(R.id.tvTemp).text = weather.main.temp.toString()
+//            mBinding.tvTemp.text = weather.main.temp.toString()
+////            findViewById<TextView>(R.id.timehumidity).text = weather.main.humidity.toString() + "%"
+//            mBinding.timehumidity.text = weather.main.humidity.toString() + "%"
+////            findViewById<TextView>(R.id.timepressure).text = weather.main.pressure.toString()
+//            mBinding.timepressure.text = weather.main.pressure.toString()
+////            findViewById<TextView>(R.id.timewind).text =
+////                "${(weather.wind.speed * 3.6).toInt()} km/h"
+//            mBinding.timewind.text = "${(weather.wind.speed * 3.6).toInt()} km/h"
+//        }
+//    }
+//
+//
+//    // Convert date and Time in standard form
+//
+//    private fun convertTime(time: Long): String {
+//        val date = Date(time * 1000L)
+//        val timeFormatted = SimpleDateFormat("HH:mm", Locale.UK)
+//        timeFormatted.timeZone = TimeZone.getDefault()
+//        return timeFormatted.format(date)
+//    }
+//
+//    private fun convertDate(time: Long): String {
+//        val date = Date(time * 1000L)
+//
+//        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
+//        formatter.timeZone = TimeZone.getDefault()
+//
+//        return formatter.format(date)
+//    }
 
     // Location enabled or not func
 
